@@ -1,0 +1,327 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>NARIT Weather Report</title>
+    <!-- Add to homescreen for Chrome on Android-->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/android-desktop.png">
+    <!-- Add to homescreen for Safari on iOS-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+    <!-- Tile icon for Win8 (144x144 + tile color)-->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+    <!-- Arm Chart-->
+    <script type="text/javascript" src="javascripts/amcharts.js"></script>
+    <script type="text/javascript" src="javascripts/serial.js"></script>
+    <link rel="shortcut icon" href="images/favicon.png">
+    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones-->
+    <!--<link rel="canonical" href="http://www.example.com/">
+    -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="stylesheets/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="stylesheets/MDLstyles.css">
+    <script src="javascripts/material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+</head>
+
+<script type="text/javascript">
+    window.onload = function()
+    {
+        AsyncWeather('/gatherData');
+        AsyncSeeing('/gatherSeeing');
+        // AsyncMoreGraph('/moregraph');
+    }
+
+    function AsyncWeather(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));
+
+                DrawChartWeather(JSON.parse(ChartData[0]));
+                // console.log(ChartData[0]);
+
+                document.getElementById("Tempurature").innerHTML =  (ChartData[1]) + '°C';
+                // document.getElementById("DewPoint").innerHTML =  (ChartData[2]) + '°C';
+                // document.getElementById("Humidity").innerHTML =  (ChartData[3]) + '%';
+                // document.getElementById("RainRate").innerHTML =  (ChartData[4]) + 'mm/hr';
+                // document.getElementById("AirPressure").innerHTML =  (ChartData[5]) + 'mBar';
+                // document.getElementById("WindSpeed").innerHTML =  (ChartData[6]) + 'm/s';
+                // document.getElementById("WindDirection").innerHTML =  (ChartData[7]);
+                // document.getElementById("Solar").innerHTML =  (ChartData[8]) + 'w/m2';
+                // document.getElementById("UVindex").innerHTML =  (ChartData[9]);
+
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous
+        //xmlHttp.setRequestHeader('Cache-Control', 'no-cache');
+        xmlHttp.send(null);
+    }
+
+    function AsyncSeeing(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));
+                // console.log(ChartData[0]);
+
+                DrawChartSeeing(JSON.parse(ChartData[0]));
+                // document.getElementById("Seeing").innerHTML =  (ChartData[1]);
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous     
+        xmlHttp.send(null);
+    }
+
+    function AsyncMoreGraph(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));
+                console.log(ChartData[0]);
+
+                // DrawChartSeeing(JSON.parse(ChartData[0]));
+                // document.getElementById("Seeing").innerHTML =  (ChartData[1]);
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous     
+        xmlHttp.send(null);
+    }
+
+    function DrawChartWeather(ChartData)
+    {
+       AmCharts.makeChart("WeatherChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "Humidity",
+                            "lineColor": "#3367D6",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Humidity (%)",
+                            "valueAxis": "ValueAxis-2",
+                            "valueField": "Humid"
+                        },
+                        {
+                            "id": "Temp",
+                            "lineColor": "#F4B400",
+                            "lineThickness": 2,
+                            "title": "Tempurature (C)",
+                            "valueAxis": "ValueAxis-1",
+                            "valueField": "Temp"
+                        },
+                        {
+                            "id": "DewPoint",
+                            "lineColor": "#DB4437",
+                            "lineThickness": 2,
+                            "title": "Dew Point (C)",
+                            "valueAxis": "ValueAxis-1",
+                            "valueField": "DewPoint"
+                        },
+                        {
+                            "id": "BreakDown",
+                            "lineThickness": 0,
+                            "showBalloon": false,
+                            "title": "BreakDown",
+                            "valueAxis": "ValueAxis-2",
+                            "valueField": "BreakDown",
+                            "visibleInLegend": false
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1",
+                            "title": "Celsius"
+                        },
+                        {
+                            "id": "ValueAxis-2",
+                            "position": "right",
+                            "axisAlpha": 0.43,
+                            // "axisThickness": 0,
+                            "gridThickness": 0,
+                            "title": "Percentage"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartSeeing(ChartData)
+    {
+       AmCharts.makeChart("SeeChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "MM/DD/YYYY JJ:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true                                
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "FWHM",
+                            "lineColor": "#3367D6",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Average FWHM",                   
+                            "valueField": "FWHM",
+                             "connect": false
+                        }
+                    ],
+                    "guides": [],   
+                     "valueAxes": [
+                        {
+                            "id": "ValueAxis-1",
+                            "title": "arcsecound"
+                        }
+                    ],               
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    
+                    "dataProvider": ChartData
+        });
+    }
+</script>
+
+
+
+  <body>
+    <!-- Simple header with fixed tabs. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title">NARIT Weather Report</span>
+        </div>
+
+       <!--  <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+          <a href="#fixed-tab-1" class="mdl-layout__tab is-active">National Observatory</a>
+          <a href="#fixed-tab-2" class="mdl-layout__tab">More</a>
+        </div> -->
+      </header>
+
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Menus</span>
+      </div>
+
+
+      <main class="mdl-layout__content">
+
+
+            <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
+              <div class="page-content">
+
+                        <div class="mdl-grid mdl-grid--no-spacing"> 
+                            <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+                            <div class="mdl-cell mdl-cell--8-col">
+                                <img class="img-responsive" src="http://1.179.136.234/weather/NARIT/nationalobs/allsky/AllSkyCurrentImage.JPG">
+                            </div>
+                            <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+                        </div>
+
+                        <div class="mdl-card mdl-cell mdl-cell--4-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+                          <div class="mdl-card__supporting-text">
+                            <h4>National Observatory</h4>
+                             Tuesday, November 01, 2016
+                             <h1 id="Tempurature">23</h1>
+                          </div>                       
+                        </div>
+
+                        <div class="mdl-grid mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--8-col">        
+                            <div>   
+                                <div id="WeatherChartDiv" style="width: 100%; height: 300px;"></div>                                          
+                            </div>                         
+                        </div>
+
+                        <div class="mdl-grid">                            
+                            <div class="mdl-color--white mdl-shadow--2dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+                                <div id="SeeChartDiv" style="width: 100%; height: 300px;"></div>                       
+                            </div>                       
+                        </div>
+
+              </div>
+            </section>
+
+
+
+            <section class="mdl-layout__tab-panel" id="fixed-tab-2">
+              <div class="page-content"><!-- Your content goes here --></div>
+            </section>  
+
+
+      </main>
+
+
+    </div>
+  </body>
+
+</html>

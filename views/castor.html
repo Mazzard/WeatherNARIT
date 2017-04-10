@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Material Design Lite</title>
+    <!-- Add to homescreen for Chrome on Android-->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/android-desktop.png">
+    <!-- Add to homescreen for Safari on iOS-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+    <!-- Tile icon for Win8 (144x144 + tile color)-->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+    <!-- Arm Chart-->
+    <script type="text/javascript" src="javascripts/amcharts.js"></script>
+    <script type="text/javascript" src="javascripts/serial.js"></script>
+    <link rel="shortcut icon" href="images/favicon.png">
+    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones-->
+    <!--<link rel="canonical" href="http://www.example.com/">
+    -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="stylesheets/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <script src="javascripts/material.min.js"></script>
+
+
+</head>
+
+
+
+<script type="text/javascript">
+
+    window.onload = function()
+    {
+       httpGetAsync('/castor');
+    }
+
+  function httpGetAsync(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = xmlHttp.responseText;                 
+                document.getElementById("test1").src = ChartData;                
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous
+        //xmlHttp.setRequestHeader('Cache-Control', 'no-cache');
+        xmlHttp.send(null);
+    }
+
+</script>
+
+
+<body>
+    <div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <!-- Title--><span class="mdl-layout-title">Castor Narit</span>
+                <!-- Add spacer, to align navigation to the right-->
+                <div class="mdl-layout-spacer"></div>
+                <button id="hdrbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"><i class="material-icons">more_vert</i>
+                </button>
+                <ul for="hdrbtn" class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right">
+                    <li class="mdl-menu__item">About</li>
+                    <li class="mdl-menu__item">Contact</li>
+                    <li class="mdl-menu__item">Legal information</li>
+                </ul>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer"><span class="mdl-layout-title">Menu</span>
+            <nav class="mdl-navigation"><a href="" class="mdl-navigation__link">Link</a><a href="" class="mdl-navigation__link">Link</a><a href="" class="mdl-navigation__link">Link</a><a href="" class="mdl-navigation__link">Link</a>
+            </nav>
+        </div>
+
+        <main class="mdl-layout__content">
+
+            <div class="demo-container mdl-grid">
+
+
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+
+                <div class="mdl-color--white mdl-shadow--2dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">                
+                    <div id="mainchart">
+
+                                <script src="javascripts/socket.io-1.4.5.js"></script>
+                                <script src="javascripts/jquery-1.12.4.min.js"></script>
+                                <script>
+                                   // var socket = io();
+                                   //  socket.on('connect', function()
+                                   //  {
+                                        // socket.on('testloop', function(msg)
+                                        // {                               
+                                        //     $('#m').val(msg);
+                                            
+                                        // }); 
+                                        // socket.on('drawcharttest', function(data)
+                                        // {    
+                                        //     document.getElementById("test1").src = data;                      
+                                        // });                   
+
+                                    // });
+                                        setInterval(function(){ document.getElementById("test1").src = '/images/test.png?'+Math.random();   }, 60000);
+                                </script>                
+
+
+
+                        <img id='test1' src=''>
+                        <!-- <img id='sss' src='/images/test.png'> -->
+                    </div>                        
+                </div>
+
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+
+            </div>
+        </main>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,492 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Material Design Lite</title>
+    <!-- Add to homescreen for Chrome on Android-->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/android-desktop.png">
+    <!-- Add to homescreen for Safari on iOS-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+    <!-- Tile icon for Win8 (144x144 + tile color)-->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+    <!-- Arm Chart-->
+    <script type="text/javascript" src="javascripts/amcharts.js"></script>
+    <script type="text/javascript" src="javascripts/serial.js"></script>
+    <link rel="shortcut icon" href="images/favicon.png">
+    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones-->
+    <!--<link rel="canonical" href="http://www.example.com/">
+    -->
+<!--     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+    <link rel="stylesheet" href="stylesheets/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <script src="javascripts/material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+</head>
+
+<style>
+    .box {
+        width: 95%;
+        border-radius: 3px;
+    }
+    .box--container {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 15px;
+    }
+    .box--chat {
+        background: #fff;
+        padding: 15px;
+        border: 1px solid #eee;
+    }
+    #chat-history {
+        list-style: none;
+        padding: 0 0 10px 0;
+        overflow: auto;
+        height: 250px;
+    }
+    .message {
+        background: #eee;
+        padding: 10px 15px;
+        border-radius: 20px;
+        margin-bottom: 5px;
+        float: left;
+        clear: both;
+    }
+    .message--me {
+        background: #B3ED7A;
+        float: right;
+    }
+    #chat-message {
+        background: #f5f5f5;
+        padding: 10px;
+        border: 1px solid #d5d5d5;
+    }
+
+    .demo-card-image.mdl-card {
+      width: 100%;
+      height: 300px;
+      background: url('http://1.179.136.234/weather/NARIT/nationalobs/allsky/AllSkyCurrentImage.JPG');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .demo-card-image > .mdl-card__actions {
+      height: 52px;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .demo-card-image__filename {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .demo-card-square.mdl-card {
+      width: 100%;
+      height: 300px;
+    }
+    .demo-card-square > .mdl-card__title {
+      color: #fff;
+      background:#3E4EB8;
+    }
+</style>
+
+<script type="text/javascript">
+    window.onload = function()
+    {
+        AsyncWeather('/gatherData');
+        AsyncSeeing('/gatherSeeing');
+        AsyncMoreGraph('/moregraph');
+        // getUTCdatetime();
+    }
+
+    function AsyncWeather(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));
+
+                DrawChartWeather(JSON.parse(ChartData[0]));
+                // console.log(ChartData[0]);
+
+                document.getElementById("Tempurature").innerHTML =  (ChartData[1]) + '°C';
+                document.getElementById("DewPoint").innerHTML =  (ChartData[2]) + '°C';
+                document.getElementById("Humidity").innerHTML =  (ChartData[3]) + '%';
+                document.getElementById("RainRate").innerHTML =  (ChartData[4]) + 'mm/hr';
+                document.getElementById("AirPressure").innerHTML =  (ChartData[5]) + 'mBar';
+                document.getElementById("WindSpeed").innerHTML =  (ChartData[6]) + 'm/s';
+                document.getElementById("WindDirection").innerHTML =  (ChartData[7]);
+                document.getElementById("Solar").innerHTML =  (ChartData[8]) + 'w/m2';
+                document.getElementById("UVindex").innerHTML =  (ChartData[9]);
+
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous
+        //xmlHttp.setRequestHeader('Cache-Control', 'no-cache');
+        xmlHttp.send(null);
+    }
+
+    function AsyncSeeing(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));
+                // console.log(ChartData[0]);
+
+                DrawChartSeeing(JSON.parse(ChartData[0]));
+                document.getElementById("Seeing").innerHTML =  (ChartData[1]);
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous     
+        xmlHttp.send(null);
+    }
+
+    function AsyncMoreGraph(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));
+                console.log(ChartData[0]);
+
+                // DrawChartSeeing(JSON.parse(ChartData[0]));
+                // document.getElementById("Seeing").innerHTML =  (ChartData[1]);
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous     
+        xmlHttp.send(null);
+    }
+
+    function DrawChartWeather(ChartData)
+    {
+       AmCharts.makeChart("WeatherChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "Humidity",
+                            "lineColor": "#3367D6",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Humidity (%)",
+                            "valueAxis": "ValueAxis-2",
+                            "valueField": "Humid"
+                        },
+                        {
+                            "id": "Temp",
+                            "lineColor": "#F4B400",
+                            "lineThickness": 2,
+                            "title": "Tempurature (C)",
+                            "valueAxis": "ValueAxis-1",
+                            "valueField": "Temp"
+                        },
+                        {
+                            "id": "DewPoint",
+                            "lineColor": "#DB4437",
+                            "lineThickness": 2,
+                            "title": "Dew Point (C)",
+                            "valueAxis": "ValueAxis-1",
+                            "valueField": "DewPoint"
+                        },
+                        {
+                            "id": "BreakDown",
+                            "lineThickness": 0,
+                            "showBalloon": false,
+                            "title": "BreakDown",
+                            "valueAxis": "ValueAxis-2",
+                            "valueField": "BreakDown",
+                            "visibleInLegend": false
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1",
+                            "title": "Celsius"
+                        },
+                        {
+                            "id": "ValueAxis-2",
+                            "position": "right",
+                            "axisAlpha": 0.43,
+                            // "axisThickness": 0,
+                            "gridThickness": 0,
+                            "title": "Percentage"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartSeeing(ChartData)
+    {
+       AmCharts.makeChart("SeeChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "MM/DD/YYYY JJ:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true                                
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "FWHM",
+                            "lineColor": "#3367D6",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Average FWHM",                   
+                            "valueField": "FWHM",
+                             "connect": false
+                        }
+                    ],
+                    "guides": [],   
+                     "valueAxes": [
+                        {
+                            "id": "ValueAxis-1",
+                            "title": "arcsecound"
+                        }
+                    ],               
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    
+                    "dataProvider": ChartData
+        });
+    }
+
+// function ImageCountBack(CurrentDate)
+// {
+//     var CurrentDate = new Date(CurrentDate);
+//     // console.log(CurrentDate);
+
+//     var StartDate;
+//     var CountDate;
+
+//     var year;
+//     var month;
+//     var date;
+//     var hour;
+//     var mins;
+
+//     for (var i = 0; i < 20; i++)
+//     {
+//         if(i==0)
+//         {
+//             StartDate = CurrentDate.setMinutes(CurrentDate.getMinutes());
+//         }
+//         else
+//         {
+//             StartDate = CurrentDate.setMinutes(CurrentDate.getMinutes() - 10);
+//         }      
+
+//         CountDate = new Date(StartDate);
+//         // console.log(CountDate.toString());
+
+//         year = CountDate.getFullYear();
+//         month = CountDate.getMonth()+1; //jan = 0
+//         date = CountDate.getDate();
+//         hour = CountDate.getHours();
+//         mins = CountDate.getMinutes();
+
+//         month = FillZero(month);
+//         date = FillZero(date);
+//         hour = FillZero(hour);
+//         mins = FillZero(mins);
+
+//         console.log("http://rammb.cira.colostate.edu/ramsdis/online/images/himawari-8/southeast_asia_band_13/southeast_asia_band_13_"+year+''+month+''+date+''+hour+''+mins+'00.gif');
+//     }    
+// }
+
+// function getUTCdatetime() 
+// {
+//     var d = new Date();   
+
+//     var year = d.getUTCFullYear();
+//     var month = d.getUTCMonth()+1; //jan = 0
+//     var date = d.getUTCDate();
+//     var hour = d.getUTCHours();
+//     var mins = d.getUTCMinutes();
+
+//     if(mins > 30) // latest update delay 30mins
+//     {
+//         mins = (d.getUTCMinutes()-30);
+//     }
+//     else
+//     {
+//         hour = (d.getUTCHours()-1);
+//         mins = (d.getUTCMinutes()+30);
+//     }
+
+//     month =  FillZero(month);
+//     date = FillZero(date);
+//     hour = FillZero(hour);
+//     mins = FillZero(mins);
+   
+//     document.getElementById("DateTimeTest").innerHTML = year+'-'+month+'-'+date+' '+hour+':'+mins;
+
+//     var minsCUT = mins.toString().substring(0, 1); // Data gather every 10 mins
+
+//     var CurrentDate = year+'-'+month+'-'+date+' '+hour+':'+minsCUT+'0';
+//     ImageCountBack(CurrentDate);
+
+// }
+
+// function FillZero(object)
+// {
+//     if(object.toString().length < 2)
+//     {
+//         object = '0'+object;
+//     }
+
+//   return object;
+// }
+
+
+</script>
+
+
+<body>
+    <div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <!-- Title--><span class="mdl-layout-title">Weather Report</span>
+                <!-- Add spacer, to align navigation to the right-->
+                <div class="mdl-layout-spacer"></div>
+                <button id="hdrbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"><i class="material-icons">more_vert</i>
+                </button>
+                <ul for="hdrbtn" class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right">
+                    <li class="mdl-menu__item">About</li>
+                    <li class="mdl-menu__item">Contact</li>
+                    <li class="mdl-menu__item">Legal information</li>
+                </ul>
+            </div>
+        </header>
+
+        <div class="mdl-layout__drawer"><span class="mdl-layout-title">Menu</span>
+            <nav class="mdl-navigation"><a href="" class="mdl-navigation__link">Link</a><a href="" class="mdl-navigation__link">Link</a><a href="" class="mdl-navigation__link">Link</a><a href="" class="mdl-navigation__link">Link</a>
+            </nav>
+        </div>
+
+        <main class="mdl-layout__content">
+
+            <div class="demo-container mdl-grid">   
+
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+
+                <div class="mdl-color--white mdl-shadow--2dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">   
+                    <div id="SeeChartDiv" style="width: 100%; height: 300px;"></div>                                          
+                </div>
+
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+
+            </div>
+
+            <div class="demo-container mdl-grid">   
+
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+
+                <div class="mdl-color--white mdl-shadow--2dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">                                   
+                    <div id="WeatherChartDiv" style="width: 100%; height: 400px;"></div>                       
+                </div>
+
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+
+            </div>
+
+
+
+            <div class="demo-container mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+
+                 <div class="content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">  
+
+              <!--         <img src="http://www.sattmet.tmd.go.th/satmet/thai/loop/enh/anigif.gif"> 
+                      <img src="http://1.179.136.234/weather/NARIT/nationalobs/allsky/AllSkyCurrentImage.JPG">
+                  </br> -->
+                      <b>Tempurature</b><p id='Tempurature'></p>
+                      <b>DewPoint</b><p id='DewPoint'></p>
+                      <b>Humidity</b><p id='Humidity'></p>   
+                      <b>RainRate</b><p id='RainRate'></p>
+                      <b>AirPressure</b><p id='AirPressure'></p>
+                      <b>WindSpeed</b><p id='WindSpeed'></p>
+                      <b>WindDirection</b><p id='WindDirection'></p>   
+                      <b>Solar Radiation</b><p id='Solar'></p>
+                      <b>UV Index</b><p id='UVindex'></p>
+                      <b>Seeing</b><p id='Seeing'></p>
+
+                 </div>
+
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>                 
+            </div>
+      
+        </main>
+
+    </div>
+</body>
+
+</html>

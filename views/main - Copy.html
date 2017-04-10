@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+  <title>Narit Weather Report</title>
+
+  <!-- Material Design fonts -->
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Bootstrap -->
+  <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Material Design -->
+  <link href="dist/css/bootstrap-material-design.css" rel="stylesheet">
+  <link href="dist/css/ripples.min.css" rel="stylesheet">
+
+
+  <link href="dist/css/snackbar.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="dist/js/jquery.js"></script>
+  <script src="dist/js/bootstrap.min.js"></script>
+  <script src="dist/js/ripples.min.js"></script>
+  <script src="dist/js/material.min.js"></script>
+
+  <script type="text/javascript" src="javascripts/amcharts.js"></script>
+  <script type="text/javascript" src="javascripts/serial.js"></script>
+
+    <!-- <link href="https://weather.com/sites/default/files/css/css_XHOAWkCjODN6iqEMFBtCUnDnMtlQxNyDQ9wzUJoT6B8.css" rel="stylesheet"> -->
+
+<style type="text/css">
+
+body
+{
+  background-color: #f5f5f5 !important;
+  color:#444;
+
+}
+.modal-open{
+  overflow: auto;
+}
+</style>
+
+</head>
+<body>
+
+<div class="sidebar-overlay"></div>
+<aside id="sidebar" class="sidebar sidebar-default sidebar-stacked open hidden-print" role="navigation">
+
+    <!-- Sidebar header -->
+    <div class="sidebar-header header-cover" style="background-image: url(images/BGcover3.jpg);">
+
+    <!-- <div class="sidebar-header header-cover" style="background-color:#fafafa;"> -->
+
+          <a data-toggle="dropdown" class="sidebar-brand" href="#settings-dropdown" aria-expanded="false" style="height: 50px; position: absolute; bottom: 0;">
+                <div class="row" style=" bottom: 5px; position: absolute; left: 20px; ">
+                    <div class="col-lg-12">
+                      <h5>National Observatory</h5>
+                    </div>
+              </div>
+               <b class="caret"></b>
+          </a>
+
+
+    </div>
+
+    <!-- Sidebar navigation -->
+    <ul class="nav sidebar-nav">
+        <li class="dropdown">
+            <ul id="settings-dropdown" class="dropdown-menu">
+                <li>
+                    <a href="query/logout.php" tabindex="-1">
+                        Site Information
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="sidebar-text" style='overflow:initial;'>
+          NARIT SITE
+        </li>
+
+        <li>
+            <a href="tutorial.php">
+                <i class="sidebar-icon material-icons">terrain</i>
+                National Observatory        
+            </a>
+        </li>
+         <li>
+            <a href="tutorial.php">
+                <i class="sidebar-icon material-icons">home</i>
+                Narit Head Office        
+            </a>
+        </li>
+         <li>
+            <a href="tutorial.php">
+                <i class="sidebar-icon material-icons">place</i>
+                Thai Airforce
+            </a>
+        </li>
+        <li>
+            <a href="tutorial.php">
+                <i class="sidebar-icon material-icons">place</i>
+                Gao Mei Gu         
+            </a>
+        </li>
+
+        <li class="divider"></li>
+
+        <li class="sidebar-text" style='overflow:initial;'>
+          Regional Observatory for the Public
+        </li>
+      
+        <li>
+            <a href="tutorial.php">
+                <i class="sidebar-icon material-icons">place</i>
+                Nakhon Ratchasima      
+            </a>
+        </li>
+        <li>
+            <a href="tutorial.php">
+                <i class="sidebar-icon material-icons">place</i>
+                Chachoengsao      
+            </a>
+        </li>
+        <li>
+            <a href="tutorial.php">
+                <i class="sidebar-icon material-icons">place</i>
+                Songkhla      
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+               <i class="sidebar-icon material-icons">mail</i>
+                Contacts us
+            </a>
+        </li>
+    </ul>
+</aside>
+
+<div class="wrapper">
+
+<div class="navbar navbar-default hidden-print">
+        <div class="container-fluid">
+          <div class="navbar-header">
+
+            <a href="javascript:void(0)" class="navbar-brand" style="margin-right:10px;" onclick="toggle()" data-ripple-centered>
+              <i class="material-icons">menu</i>
+            </a>
+
+            <!-- <span>Weather Report - Thai National Observatory</span> -->
+<!--             <a class="navbar-brand" href="main.php"> <i class="material-icons">home</i>
+              <span style=" padding: 5px; vertical-align: middle; ">Home</span>
+            </a> -->
+
+            <a class="navbar-brand" href="#">
+              <span style=" padding: 5px; vertical-align: middle; ">NARIT Weather Report - Thai National Observatory</span>
+            </a>
+
+          </div>
+
+        </div>
+</div>
+
+
+    <div class="constructor">
+
+    <!-- <div>
+          <ul class="breadcrumb" style="margin-bottom: 5px;">
+              <li class="active">Narit Weather Report</li>
+          </ul>
+    </div> -->
+
+      <div class='center-block' style='max-width: 1100px;'>       
+
+           <!--    <div class="row">
+                  <div class="col-md-12">
+                      <h1 style="font-size:45px; color: #3063af;">Thai National Observatory</h1>
+                      <p style="color:#666; font-size:18px;">2.4 - Meter Telescope</p>
+                  </div>
+              </div> -->
+
+              <div class="row">
+
+
+                  <div class="col-md-6">
+                      <div class="col-md-12">
+                             <h2>Thai National Observatory</h2>                         
+                             <p id='DateTime'>Monday 1:00 PM</p>
+
+                              <div class='col-md-2 col-sm-2'>                                                                                        
+                                  <img src="images/wb/partly_cloudy.png" style=" padding-top: 20px; ">
+
+                              </div>
+
+                            <div class='col-md-4 col-sm-4'>
+
+                                <h1 id='Humidity' style='font-size:50px;'>N/A</h1>
+                                <p><img src="/images/wb/icon_humidity.png" style=" width: 15px; opacity: 0.5; margin: 5px; margin-top: 0px; ">Humidity</p>
+                             <!--  <span class="wx-detail-icon">
+                                  <span class="wx-iconfont-global wx-icon-humidity"></span>
+                              </span>
+                              <span class="wx-detail-text">
+                                  <span class="wx-detail-label">Humidity</span>                              
+                              </span> -->
+
+                            </div>
+
+                            <div class='col-md-3 col-sm-3'>
+                                <div style=" margin: 20px; ">
+                                    <span id="Tempurature" style="font-size:24px;"></span>                                    
+                                    <p style=" color: #777; ">Tempurature</p>
+                                </div>
+                            </div>
+
+                            <div class='col-md-3 col-sm-3'>
+                                <div style=" margin: 20px; ">
+                                    <span id="DewPoint" style="font-size:24px;"></span>                                    
+                                    <p style=" color: #777; ">DewPoint</p>
+                                </div>
+                            </div>
+                      </div>
+
+                      <div class="col-md-12" style='height:25px;'></div>                    
+
+                      <div class="col-md-12">
+                            <table class="table table-striped">
+                                <tbody> 
+                                  <tr>
+                                      <td>Cloud</td>
+                                      <td id="">Cloudy</td>
+                                      <td></td>
+                                  </tr>    
+                                 <tr>
+                                      <td>Seeing</td>
+                                      <td id="Seeing">n/a</td>
+                                      <td>arcsecound</td>
+                                  </tr>    
+                                  <tr>
+                                      <td>WindSpeed</td>
+                                      <td id="WindSpeed">n/a</td>
+                                      <td>m/s</td>
+                                  </tr> 
+                                   <tr>
+                                      <td>Wind Direction</td>
+                                      <td id="WindDirection">n/a</td>
+                                      <td></td>
+                                  </tr>        
+                                    <tr>
+                                      <td>RainRate</td>
+                                      <td id="RainRate">n/a</td>
+                                      <td>mm/hr</td>
+                                  </tr>
+                                    <tr>
+                                      <td>AirPressure</td>
+                                      <td id="AirPressure">n/a</td>
+                                      <td>mBar</td>
+                                  </tr>
+                                   <tr>
+                                      <td>Solar Radiation</td>
+                                      <td id="Solar">n/a</td>
+                                      <td>w/m2</td>
+                                  </tr>
+                                  <tr>
+                                      <td>UV Index</td>
+                                      <td id="UVindex">n/a</td>
+                                      <td></td>
+                                  </tr>               
+                               <!--  <tr>
+                                  <td colspan="3" id="DateLabel"><b>FULL REPORT</b></td>
+                                </tr> -->
+                                </tbody>
+                              </table>
+                      </div>
+
+                  </div>
+
+
+
+                  <div class='col-md-6'>      
+
+                      <div style='height:80px;'>
+                         
+                      </div>  
+
+                      <div class="panel panel-default">                            
+                          <div class="panel-heading" style="cursor: pointer;padding: 0px;">
+
+                              <div style="position: absolute;color: #fff;font-weight: 500;top: 2%;left: 50%;margin-top: 80px;right: 50%;">N</div>      
+                              <div style="position: absolute;color: #fff;font-weight: 500;bottom: 5%;left: 50%;right: 50%;margin-bottom: 55px;">S</div>  
+                              <div style=" position: absolute; color: #fff; font-weight: 500; left: 5%; top: 40%; ">E</div>
+                              <div style=" position: absolute; color: #fff; font-weight: 500; right: 5%; top: 40%; ">W</div>
+
+                                <img class="img-responsive" src="http://1.179.136.234/weather/NARIT/nationalobs/allsky/AllSkyCurrentImage.JPG" style="border-top-left-radius: 3px;border-top-right-radius: 3px;width: 100%;" onclick="$('#WeatherModal').modal('toggle')">                               
+                          </div>
+                          <div class="panel-body">
+                            <b>All Sky Camera</b>
+                          </div>
+                      </div>                        
+                                              
+                  </div>
+
+              </div>   
+
+              <!-- <hr> -->
+              
+
+              <div class="row">
+
+                  <div class="col-md-6">
+                      <div class="panel panel-default">
+                          <div id="SeeingChartDiv" style="width: 100%; height: 300px;"></div> 
+                      </div>
+                  </div>
+
+                  <div class='col-md-6'>                                  
+                      <div class="panel panel-default">                             
+                          <div class="panel-heading" style="padding: 0px;">
+                                <img class="img-responsive" src="http://www.sattmet.tmd.go.th/satmet/thai/loop/enh/anigif.gif" style="border-top-left-radius: 3px;border-top-right-radius: 3px;width: 100%;">                               
+                          </div>
+
+                          <div class="panel-body">
+                            <b>Satellite Images</b>
+                          </div>
+
+                      </div>                        
+                       <!-- <img class="img-responsive" src="images/DSC_2739.jpg">                            -->
+                  </div>
+
+              </div>
+
+
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="panel panel-default">
+                          <div id="WeatherChartDiv" style="width: 100%; height: 300px;"></div> 
+                      </div>
+                  </div>
+              </div>
+
+
+
+                <!-- Modal -->
+              <div class="modal fade" id="WeatherModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+
+<!--                     <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title"></h4>
+                    </div> -->
+
+                    <div class="modal-body" style="padding:0;">
+                          <img class="img-responsive" src="http://1.179.136.234/weather/NARIT/nationalobs/allsky/AllSkyCurrentImage.JPG" style="width: 100%;">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+          </div>
+      </div>
+
+
+    </div>
+</div>
+
+
+  <script type="text/javascript">
+
+   window.onload = function()
+    {
+        AsyncWeather('/gatherData');    
+        AsyncSeeing('/gatherSeeing');  
+
+    }
+
+    function AsyncWeather(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));
+
+                DrawChartWeather(JSON.parse(ChartData[0]));
+                // console.log(ChartData[0]);
+
+                document.getElementById("Tempurature").innerHTML =  (ChartData[1]) + '°C';
+                document.getElementById("DewPoint").innerHTML =  (ChartData[2]) + '°C';
+
+
+                // document.getElementById("Humidity").setAttribute("style", "color:#DB4437");
+     
+                document.getElementById("Humidity").innerHTML =  (ChartData[3]) + '%';
+                document.getElementById("RainRate").innerHTML =  (ChartData[4]);
+                document.getElementById("AirPressure").innerHTML =  (ChartData[5]);
+                document.getElementById("WindSpeed").innerHTML =  (ChartData[6]);
+                document.getElementById("WindDirection").innerHTML =  (ChartData[7]);
+                document.getElementById("Solar").innerHTML =  (ChartData[8]);
+                document.getElementById("UVindex").innerHTML =  (ChartData[9]);
+
+                document.getElementById("DateTime").innerHTML = 'Update on : '+(ChartData[11]+' '+ChartData[10]);
+   
+
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous      
+        xmlHttp.send(null);
+    }
+
+    function AsyncSeeing(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));               
+
+                DrawChartSeeing(JSON.parse(ChartData[0]));
+                document.getElementById("Seeing").innerHTML =  (ChartData[1]);
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous     
+        xmlHttp.send(null);
+    }
+
+    function AsyncMoreGraph(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));               
+              
+                DrawChartBarometer(JSON.parse(ChartData.Barometer)); 
+                DrawChartWindSpeed(JSON.parse(ChartData.WindSpeed));   
+                DrawChartSolar(JSON.parse(ChartData.Solar));   
+                DrawChartUV(JSON.parse(ChartData.UV)); 
+                DrawchartRainRate(JSON.parse(ChartData.RainRate));
+                // console.log(ChartData.RainRate);      
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous     
+        xmlHttp.send(null);
+    }
+
+    function DrawChartWeather(ChartData)
+    {
+       AmCharts.makeChart("WeatherChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "Humidity",
+                            "lineColor": "#3367D6",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Humidity (%)",
+                            "valueAxis": "ValueAxis-2",
+                            "valueField": "Humid",
+                            "fillAlphas": 0.1,
+                        },
+                        {
+                            "id": "Temp",
+                            "lineColor": "#F4B400",
+                            "lineThickness": 2,
+                            "title": "Tempurature (C)",
+                            "valueAxis": "ValueAxis-1",
+                            "valueField": "Temp"
+                        },
+                        {
+                            "id": "DewPoint",
+                            "lineColor": "#DB4437",
+                            "lineThickness": 2,
+                            "title": "Dew Point (C)",
+                            "valueAxis": "ValueAxis-1",
+                            "valueField": "DewPoint"
+                        },
+                        {
+                            "id": "BreakDown",
+                            "lineThickness": 0,
+                            "showBalloon": false,
+                            "title": "BreakDown",
+                            "valueAxis": "ValueAxis-2",
+                            "valueField": "BreakDown",
+                            "visibleInLegend": false
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1",
+                            "title": "Celsius"
+                        },
+                        {
+                            "id": "ValueAxis-2",
+                            "position": "right",
+                            "axisAlpha": 0.43,
+                            // "axisThickness": 0,
+                            "gridThickness": 0,
+                            "title": "Percentage"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartSeeing(ChartData)
+    {
+       AmCharts.makeChart("SeeingChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "MM/DD/YYYY JJ:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true                                
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "FWHM",
+                            "lineColor": "#3367D6",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Average FWHM",                   
+                            "valueField": "FWHM",
+                             "connect": false
+                        }
+                    ],
+                    "guides": [],   
+                     "valueAxes": [
+                        {
+                            "id": "ValueAxis-1",
+                            "title": "arcsecound"
+                        }
+                    ],               
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    
+                    "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartBarometer(ChartData)
+    {
+       AmCharts.makeChart("BarometerChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "AirPressure",
+                            "lineColor": "#2196f3",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Barometer (mb)",                         
+                            "valueField": "AirPressure"
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartWindSpeed(ChartData)
+    {
+       AmCharts.makeChart("WindSpeedChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "WindSpeed",
+                            "lineColor": "#2196f3",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "WindSpeed (m/s)",                         
+                            "valueField": "WindSpeed"
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartSolar(ChartData)
+    {
+       AmCharts.makeChart("SolarChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "Solar",
+                            "lineColor": "#2196f3",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Solar Radiation (w/m2)",                         
+                            "valueField": "Solar"
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartUV(ChartData)
+    {
+       AmCharts.makeChart("UVChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "UV",
+                            "lineColor": "#2196f3",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "UV Index",                         
+                            "valueField": "UV"
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawchartRainRate(ChartData)
+    {
+       AmCharts.makeChart("RainRateChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "RainRate",
+                            "lineColor": "#2196f3",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Rain Rate (mm/hr)",                         
+                            "valueField": "RainRate"
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+
+    function MoreGraph()
+    {
+        if(document.getElementById("BarometerChartDiv").innerHTML =="")
+        {
+           AsyncMoreGraph('/MoreGraph');  
+        }       
+    }
+
+  </script>
+
+<script type="text/javascript">
+
+      function toggle()
+      {    
+              var sidebar = $('#sidebar');
+              var overlay = $('.sidebar-overlay');
+              var navbar = $('.navbar-default');
+
+              sidebar.toggleClass('open');
+
+              if (sidebar.hasClass('open')) 
+              {
+                  if(sidebar.hasClass('sidebar-stacked'))
+                  {
+                      navbar.removeClass('full');
+                  }
+
+                  if(sidebar.hasClass('sidebar-fixed-left'))
+                  {
+                      overlay.addClass('active');
+                  }                  
+              }
+              else
+              {
+                  navbar.addClass('full');
+                  overlay.removeClass('active');
+              }
+      }
+
+      $(window).resize(function()
+      {
+         //console.log('resize called');
+         var width = $(window).width();
+         var sidebar = $('#sidebar');
+         var overlay = $('.sidebar-overlay');
+         var navbar = $('.navbar-default');
+
+         if(width <= 1366)
+         {
+            sidebar.removeClass('sidebar-stacked').addClass('sidebar-fixed-left');
+            sidebar.removeClass('open');
+            navbar.addClass('full');
+            // overlay.addClass('active');
+         }
+         else
+         {
+            sidebar.removeClass('sidebar-fixed-left').addClass('sidebar-stacked');
+            sidebar.addClass('open');
+            overlay.removeClass('active');
+            navbar.removeClass('full');
+         }
+
+      })
+      .resize();//trigger the resize event on page load.
+
+      // Sidebar toggle
+
+      $(document).ready(function() 
+      {      
+          $.material.init(); //material btn ripples effect
+
+          var overlay = $('.sidebar-overlay');
+
+          overlay.on('click', function() 
+          {
+              $(this).removeClass('active');
+              $('#sidebar').removeClass('open');
+          });
+
+      });
+
+      // Sidebar constructor
+
+      $(document).ready(function() 
+      {         
+          var sidebar = $('#sidebar');
+          var sidebarHeader = $('#sidebar .sidebar-header');
+          var sidebarImg = sidebarHeader.css('background-image');
+          var toggleButtons = $('.sidebar-toggle');
+
+          // Hide toggle buttons on default position
+          // toggleButtons.css('display', 'none');
+          $('body').css('display');
+
+
+          // Sidebar position
+          $('#sidebar-position').change(function() 
+          {
+              var value = $( this ).val();
+              sidebar.removeClass('sidebar-fixed-left sidebar-fixed-right sidebar-stacked').addClass(value).addClass('open');
+          
+          });
+
+          // Header cover
+          $('#sidebar-header').change(function() {
+              var value = $(this).val();
+
+              $('.sidebar-header').removeClass('header-cover').addClass(value);
+
+              if (value == 'header-cover') {
+                  sidebarHeader.css('background-image', sidebarImg)
+              } else {
+                  sidebarHeader.css('background-image', '')
+              }
+          });
+      });
+
+      /**
+       * Created by Kupletsky Sergey on 08.09.14.
+       *
+       * Add JQuery animation to bootstrap dropdown elements.
+       */
+
+      (function($) {
+          var dropdown = $('.dropdown');
+
+          // Add slidedown animation to dropdown
+          dropdown.on('show.bs.dropdown', function(e){
+              $(this).find('.dropdown-menu').first().stop(true, true).slideDown();
+          });
+
+          // Add slideup animation to dropdown
+          dropdown.on('hide.bs.dropdown', function(e){
+              $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
+          });
+      })(jQuery);
+
+
+
+      (function(removeClass) {
+
+          jQuery.fn.removeClass = function( value ) {
+          if ( value && typeof value.test === "function" ) {
+            for ( var i = 0, l = this.length; i < l; i++ ) {
+              var elem = this[i];
+              if ( elem.nodeType === 1 && elem.className ) {
+                var classNames = elem.className.split( /\s+/ );
+
+                for ( var n = classNames.length; n--; ) {
+                  if ( value.test(classNames[n]) ) {
+                    classNames.splice(n, 1);
+                  }
+                }
+                elem.className = jQuery.trim( classNames.join(" ") );
+              }
+            }
+          } else {
+            removeClass.call(this, value);
+          }
+          return this;
+        }
+
+      })(jQuery.fn.removeClass);
+</script>
+
+</body>
+
+</body>
+</html>

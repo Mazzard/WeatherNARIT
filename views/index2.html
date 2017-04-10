@@ -1,0 +1,848 @@
+<!doctype html>
+<!--
+  Material Design Lite
+  Copyright 2015 Google Inc. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Narit Weather Report</title>
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/android-desktop.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="shortcut icon" href="images/favicon.png">
+
+    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+    <!--
+    <link rel="canonical" href="http://www.example.com/">
+    -->
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.deep_purple-pink.min.css"> -->
+        <link rel="stylesheet" href="stylesheets/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="stylesheets/MDLstyles.css">
+
+    <script type="text/javascript" src="javascripts/amcharts.js"></script>
+    <script type="text/javascript" src="javascripts/serial.js"></script>
+    <script src="javascripts/material.min.js"></script>
+
+    <style>
+
+    .demo-card-square {
+      color: #fff;
+      background:
+        url('http://1.179.136.234/weather/NARIT/nationalobs/allsky/AllSkyCurrentImage.JPG') bottom right 15% no-repeat #46B6AC;
+    }
+    .demo-card-image__filename 
+    {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    </style>
+
+  </head>
+
+
+  <script type="text/javascript">
+
+   window.onload = function()
+    {
+        AsyncWeather('/gatherData');    
+        AsyncSeeing('/gatherSeeing');  
+
+    }
+
+    function AsyncWeather(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));
+
+                DrawChartWeather(JSON.parse(ChartData[0]));
+                // console.log(ChartData[0]);
+
+                // document.getElementById("Tempurature").innerHTML =  (ChartData[1]) + '°C';
+                // document.getElementById("DewPoint").innerHTML =  (ChartData[2]) + '°C';
+
+
+                // document.getElementById("Humidity").setAttribute("style", "color:#DB4437");
+     
+                document.getElementById("Humidity").innerHTML =  (ChartData[3]) + '%';
+                // document.getElementById("RainRate").innerHTML =  (ChartData[4]) + 'mm/hr';
+                // document.getElementById("AirPressure").innerHTML =  (ChartData[5]) + 'mBar';
+                // document.getElementById("WindSpeed").innerHTML =  (ChartData[6]) + 'm/s';
+                // document.getElementById("WindDirection").innerHTML =  (ChartData[7]);
+                // document.getElementById("Solar").innerHTML =  (ChartData[8]) + 'w/m2';
+                // document.getElementById("UVindex").innerHTML =  (ChartData[9]);
+
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous      
+        xmlHttp.send(null);
+    }
+
+    function AsyncSeeing(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));               
+
+                DrawChartSeeing(JSON.parse(ChartData[0]));
+                // document.getElementById("Seeing").innerHTML =  (ChartData[1]);
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous     
+        xmlHttp.send(null);
+    }
+
+    function AsyncMoreGraph(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            {
+                var ChartData = (JSON.parse(xmlHttp.responseText));               
+              
+                DrawChartBarometer(JSON.parse(ChartData.Barometer)); 
+                DrawChartWindSpeed(JSON.parse(ChartData.WindSpeed));   
+                DrawChartSolar(JSON.parse(ChartData.Solar));   
+                DrawChartUV(JSON.parse(ChartData.UV)); 
+                DrawchartRainRate(JSON.parse(ChartData.RainRate));
+                // console.log(ChartData.RainRate);      
+            }
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous     
+        xmlHttp.send(null);
+    }
+
+    function DrawChartWeather(ChartData)
+    {
+       AmCharts.makeChart("WeatherChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "Humidity",
+                            "lineColor": "#3367D6",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Humidity (%)",
+                            "valueAxis": "ValueAxis-2",
+                            "valueField": "Humid"
+                        },
+                        {
+                            "id": "Temp",
+                            "lineColor": "#F4B400",
+                            "lineThickness": 2,
+                            "title": "Tempurature (C)",
+                            "valueAxis": "ValueAxis-1",
+                            "valueField": "Temp"
+                        },
+                        {
+                            "id": "DewPoint",
+                            "lineColor": "#DB4437",
+                            "lineThickness": 2,
+                            "title": "Dew Point (C)",
+                            "valueAxis": "ValueAxis-1",
+                            "valueField": "DewPoint"
+                        },
+                        {
+                            "id": "BreakDown",
+                            "lineThickness": 0,
+                            "showBalloon": false,
+                            "title": "BreakDown",
+                            "valueAxis": "ValueAxis-2",
+                            "valueField": "BreakDown",
+                            "visibleInLegend": false
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1",
+                            "title": "Celsius"
+                        },
+                        {
+                            "id": "ValueAxis-2",
+                            "position": "right",
+                            "axisAlpha": 0.43,
+                            // "axisThickness": 0,
+                            "gridThickness": 0,
+                            "title": "Percentage"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartSeeing(ChartData)
+    {
+       AmCharts.makeChart("SeeingChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "MM/DD/YYYY JJ:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true                                
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "FWHM",
+                            "lineColor": "#3367D6",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Average FWHM",                   
+                            "valueField": "FWHM",
+                             "connect": false
+                        }
+                    ],
+                    "guides": [],   
+                     "valueAxes": [
+                        {
+                            "id": "ValueAxis-1",
+                            "title": "arcsecound"
+                        }
+                    ],               
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    
+                    "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartBarometer(ChartData)
+    {
+       AmCharts.makeChart("BarometerChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "AirPressure",
+                            "lineColor": "#2196f3",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Barometer (mb)",                         
+                            "valueField": "AirPressure"
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartWindSpeed(ChartData)
+    {
+       AmCharts.makeChart("WindSpeedChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "WindSpeed",
+                            "lineColor": "#2196f3",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "WindSpeed (m/s)",                         
+                            "valueField": "WindSpeed"
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartSolar(ChartData)
+    {
+       AmCharts.makeChart("SolarChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "Solar",
+                            "lineColor": "#2196f3",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Solar Radiation (w/m2)",                         
+                            "valueField": "Solar"
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawChartUV(ChartData)
+    {
+       AmCharts.makeChart("UVChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "UV",
+                            "lineColor": "#2196f3",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "UV Index",                         
+                            "valueField": "UV"
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+    function DrawchartRainRate(ChartData)
+    {
+       AmCharts.makeChart("RainRateChartDiv",
+                {
+                    "type": "serial",
+                    "categoryField": "date",
+                    "dataDateFormat": "DD/MM/YY HH:NN",
+                    "theme": "light",
+                    "categoryAxis": {
+                        "minPeriod": "mm",
+                        "parseDates": true,
+                        // "gridThickness": 0,
+                        "title": ""
+                    },
+                    "chartCursor": {
+                        "enabled": true,
+                        "categoryBalloonDateFormat": "JJ:NN"
+                    },
+                    "chartScrollbar": {
+                        "enabled": true
+                    },
+                    "trendLines": [],
+                    "graphs": [
+                        {
+                            "id": "RainRate",
+                            "lineColor": "#2196f3",
+                            "lineThickness": 2,
+                            "negativeFillAlphas": 0,
+                            "title": "Rain Rate (mm/hr)",                         
+                            "valueField": "RainRate"
+                        }
+                    ],
+                    "guides": [],
+                    "valueAxes": [
+                        {
+                            "id": "ValueAxis-1"
+                        }
+                    ],
+                    "allLabels": [],
+                    "balloon": {},
+                    "legend": {
+                        "enabled": true,
+                        "position": "bottom",
+                        "switchable": false,
+                        "valueAlign": "left"
+                    },
+                    // "titles": [
+                    //     {
+                    //         // "id": "Title-1",
+                    //         // "size": 15,
+                    //         // "text": "Chart Title"
+                    //     }
+                    // ],
+            "dataProvider": ChartData
+        });
+    }
+
+
+    function MoreGraph()
+    {
+        if(document.getElementById("BarometerChartDiv").innerHTML =="")
+        {
+           AsyncMoreGraph('/MoreGraph');  
+        }       
+    }
+
+  </script>
+
+
+  <body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+      <header class="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
+        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+        </div>
+
+        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+          <h3>Narit Weather Report</h3>
+        </div>
+
+
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
+
+          <a href="#overview" class="mdl-layout__tab is-active">National Observatory</a>
+          <a href="#features" class="mdl-layout__tab" onclick='MoreGraph();'>Details</a>
+
+        </div>
+      </header>
+
+      <div class="mdl-layout__drawer mdl-layout--large-screen-only">
+        <span class="mdl-layout-title">Title</span>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="">Link</a>
+          <a class="mdl-navigation__link" href="">Link</a>
+          <a class="mdl-navigation__link" href="">Link</a>
+          <a class="mdl-navigation__link" href="">Link</a>
+        </nav>
+      </div>
+
+      <main class="mdl-layout__content">
+
+
+        <div class="mdl-layout__tab-panel is-active" id="overview">        
+
+          <div class="mdl-grid no-padding">
+
+              <div class="mdl-cell mdl-card mdl-shadow--2dp mdl-cell--3-col">
+                    <div class="mdl-card__supporting-text">
+                    <h4>National Observatory</h4>
+                     Tuesday, November 01, 2016
+                     <h1 id="Humidity">N/A</h1>
+                    </div>
+                    <div class="mdl-card__actions">
+                      <a href="#" class="mdl-button">FULL REPORT</a>
+                    </div>
+              </div>
+
+              <div class="mdl-cell mdl-card mdl-shadow--2dp mdl-cell--5-col">
+                    <div id="WeatherChartDiv" style="width: 100%; height: 300px;"></div> 
+              </div>
+              <div class="mdl-cell mdl-card mdl-shadow--2dp mdl-cell--4-col">
+                    <div id="SeeingChartDiv" style="width: 100%; height: 300px;"></div> 
+              </div>
+
+          </div>
+
+          <div class="mdl-grid no-padding">
+                <div class="mdl-cell mdl-card mdl-shadow--2dp mdl-cell--4-col">
+                    <img class="img-responsive" src="http://1.179.136.234/weather/NARIT/nationalobs/allsky/AllSkyCurrentImage.JPG">
+                </div>
+                <div class="mdl-cell mdl-card mdl-shadow--2dp mdl-cell--4-col">
+                    <img class="img-responsive" src="http://www.sattmet.tmd.go.th/satmet/thai/loop/enh/anigif.gif">
+                </div>                
+          </div>
+
+           <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+
+                <div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+                  <div class="demo-card-square mdl-card__supporting-text">
+                    <h4>Features</h4>
+                    Dolore ex deserunt aute fugiat aute nulla ea sunt aliqua nisi cupidatat eu. Nostrud in laboris labore nisi amet do dolor eu fugiat consectetur elit cillum esse.
+                  </div>
+                  <div class="mdl-card__actions">
+                    <a href="#" class="mdl-button">Read our features</a>
+                  </div>
+                </div>
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="btn1">
+                  <i class="material-icons">more_vert</i>
+                </button>
+              
+          </section>
+
+
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div class="mdl-card__supporting-text mdl-grid mdl-grid--no-spacing">
+                <h4 class="mdl-cell mdl-cell--12-col">All Sky Camera</h4>
+
+                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+                  <div class="section__circle-container__circle mdl-color--primary"></div>
+                </div>
+
+                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+                  <h5>Lorem ipsum dolor sit amet</h5>
+                  Dolore ex deserunt aute fugiat aute nulla ea sunt aliqua nisi cupidatat eu. Duis nulla tempor do aute et eiusmod velit exercitation nostrud quis <a href="#">proident minim</a>.
+                </div>
+                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+                  <div class="section__circle-container__circle mdl-color--primary"></div>
+                </div>
+                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+                  <h5>Lorem ipsum dolor sit amet</h5>
+                  Dolore ex deserunt aute fugiat aute nulla ea sunt aliqua nisi cupidatat eu. Duis nulla tempor do aute et eiusmod velit exercitation nostrud quis <a href="#">proident minim</a>.
+                </div>
+                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+                  <div class="section__circle-container__circle mdl-color--primary"></div>
+                </div>
+                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+                  <h5>Lorem ipsum dolor sit amet</h5>
+                  Dolore ex deserunt aute fugiat aute nulla ea sunt aliqua nisi cupidatat eu. Duis nulla tempor do aute et eiusmod velit exercitation nostrud quis <a href="#">proident minim</a>.
+                </div>
+              </div>
+              <div class="mdl-card__actions">
+                <a href="#" class="mdl-button">Read our features</a>
+              </div>
+            </div>
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="btn2">
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right" for="btn2">
+              <li class="mdl-menu__item">Lorem</li>
+              <li class="mdl-menu__item" disabled>Ipsum</li>
+              <li class="mdl-menu__item">Dolor</li>
+            </ul>
+          </section>
+
+
+          <section class="section--footer mdl-color--white mdl-grid">
+            <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+              <div class="section__circle-container__circle mdl-color--accent section__circle--big"></div>
+            </div>
+            <div class="section__text mdl-cell mdl-cell--4-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+              <h5>Lorem ipsum dolor sit amet</h5>
+              Qui sint ut et qui nisi cupidatat. Reprehenderit nostrud proident officia exercitation anim et pariatur ex.
+            </div>
+            <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+              <div class="section__circle-container__circle mdl-color--accent section__circle--big"></div>
+            </div>
+            <div class="section__text mdl-cell mdl-cell--4-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+              <h5>Lorem ipsum dolor sit amet</h5>
+              Qui sint ut et qui nisi cupidatat. Reprehenderit nostrud proident officia exercitation anim et pariatur ex.
+            </div>
+          </section>
+        </div>
+
+        <div class="mdl-layout__tab-panel mdl-color--grey-100" id="features">
+
+            <div class="mdl-grid no-padding">
+                <div class="mdl-cell mdl-card mdl-shadow--2dp mdl-cell--4-col">
+                    <div id="BarometerChartDiv" style="width: 100%; height: 300px;"></div> 
+                </div>
+                <div class="mdl-cell mdl-card mdl-shadow--2dp mdl-cell--4-col">
+                    <div id="WindSpeedChartDiv" style="width: 100%; height: 300px;"></div> 
+                </div>
+                <div class="mdl-cell mdl-card mdl-shadow--2dp mdl-cell--4-col">
+                    <div id="SolarChartDiv" style="width: 100%; height: 300px;"></div> 
+                </div>
+            </div>
+
+            <div class="mdl-grid no-padding">
+                <div class="mdl-cell mdl-card mdl-shadow--2dp mdl-cell--4-col">
+                    <div id="UVChartDiv" style="width: 100%; height: 300px;"></div> 
+                </div>   
+                <div class="mdl-cell mdl-card mdl-shadow--2dp mdl-cell--4-col">
+                    <div id="RainRateChartDiv" style="width: 100%; height: 300px;"></div> 
+                </div>             
+            </div>
+
+
+          <section class="section--center mdl-grid mdl-grid--no-spacing">            
+            <div class="mdl-cell mdl-cell--12-col">
+              <h4>Features</h4>
+              Minim duis incididunt est cillum est ex occaecat consectetur. Qui sint ut et qui nisi cupidatat. Reprehenderit nostrud proident officia exercitation anim et pariatur ex.
+              <ul class="toc">
+                <h4>Contents</h4>
+                <a href="#lorem1">Lorem ipsum</a>
+                <a href="#lorem2">Lorem ipsum</a>
+                <a href="#lorem3">Lorem ipsum</a>
+                <a href="#lorem4">Lorem ipsum</a>
+                <a href="#lorem5">Lorem ipsum</a>
+              </ul>
+
+              <h5 id="lorem1">Lorem ipsum dolor sit amet</h5>
+              Excepteur et pariatur officia veniam anim culpa cupidatat consequat ad velit culpa est non.
+              <ul>
+                <li>Nisi qui nisi duis commodo duis reprehenderit consequat velit aliquip.</li>
+                <li>Dolor consectetur incididunt in ipsum laborum non et irure pariatur excepteur anim occaecat officia sint.</li>
+                <li>Lorem labore proident officia excepteur do.</li>
+              </ul>
+              
+            </div>
+          </section>
+        </div>
+
+        <footer class="mdl-mega-footer">
+          <div class="mdl-mega-footer--middle-section">
+            <div class="mdl-mega-footer--drop-down-section">
+              <input class="mdl-mega-footer--heading-checkbox" type="checkbox" checked>
+              <h1 class="mdl-mega-footer--heading">Features</h1>
+              <ul class="mdl-mega-footer--link-list">
+                <li><a href="#">About</a></li>
+                <li><a href="#">Terms</a></li>
+                <li><a href="#">Partners</a></li>
+                <li><a href="#">Updates</a></li>
+              </ul>
+            </div>
+            <div class="mdl-mega-footer--drop-down-section">
+              <input class="mdl-mega-footer--heading-checkbox" type="checkbox" checked>
+              <h1 class="mdl-mega-footer--heading">Details</h1>
+              <ul class="mdl-mega-footer--link-list">
+                <li><a href="#">Spec</a></li>
+                <li><a href="#">Tools</a></li>
+                <li><a href="#">Resources</a></li>
+              </ul>
+            </div>
+            <div class="mdl-mega-footer--drop-down-section">
+              <input class="mdl-mega-footer--heading-checkbox" type="checkbox" checked>
+              <h1 class="mdl-mega-footer--heading">Technology</h1>
+              <ul class="mdl-mega-footer--link-list">
+                <li><a href="#">How it works</a></li>
+                <li><a href="#">Patterns</a></li>
+                <li><a href="#">Usage</a></li>
+                <li><a href="#">Products</a></li>
+                <li><a href="#">Contracts</a></li>
+              </ul>
+            </div>
+            <div class="mdl-mega-footer--drop-down-section">
+              <input class="mdl-mega-footer--heading-checkbox" type="checkbox" checked>
+              <h1 class="mdl-mega-footer--heading">FAQ</h1>
+              <ul class="mdl-mega-footer--link-list">
+                <li><a href="#">Questions</a></li>
+                <li><a href="#">Answers</a></li>
+                <li><a href="#">Contact us</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="mdl-mega-footer--bottom-section">
+            <div class="mdl-logo">
+              More Information
+            </div>
+            <ul class="mdl-mega-footer--link-list">
+              <li><a href="https://developers.google.com/web/starter-kit/">Web Starter Kit</a></li>
+              <li><a href="#">Help</a></li>
+              <li><a href="#">Privacy and Terms</a></li>
+            </ul>
+          </div>
+        </footer>
+
+      </main>
+    </div>
+<!--     <a href="https://github.com/google/material-design-lite/blob/mdl-1.x/templates/text-only/" target="_blank" id="view-source" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--accent mdl-color-text--accent-contrast">View Source</a> -->
+
+  </body>
+</html>
